@@ -1,6 +1,6 @@
 top = ram
 vsrc = ../../src/$(top).v
-simsrc = tb.cpp
+simsrc = tb_$(top).cpp
 
 verilate: $(vsrc) $(simsrc)
 	verilator -Wall --cc $(vsrc) --exe $(simsrc)
@@ -10,3 +10,6 @@ compile: verilate
 
 run: compile
 	./obj_dir/V$(top)
+
+clean:
+	rm -rf obj_dir
