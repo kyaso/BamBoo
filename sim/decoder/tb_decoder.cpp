@@ -67,7 +67,7 @@ int main(int argc, char** argv, char** env) {
         // lui = 0
         // auipc = 0
         // branch = 0
-        // jal/r = 1
+        // jal = 1, jalr = 0
         // imm_o = FFF3AC76
         SET_SIG(2, top->ir_i, 0xC773A36F)
 
@@ -86,7 +86,7 @@ int main(int argc, char** argv, char** env) {
         // lui = 0
         // auipc = 0
         // branch = 0
-        // jal/r = 1
+        // jal = 0, jalr = 1
         // imm_o = fffffcd5
         SET_SIG(3, top->ir_i, 0xCD5E88E7)
 
@@ -200,7 +200,7 @@ int main(int argc, char** argv, char** env) {
             std::cout << "lui = " << (int)top->lui << std::endl;
             std::cout << "auipc = " << (int)top->auipc << std::endl;
             std::cout << "branch = " << (int)top->branch << std::endl;
-            std::cout << "jal/r = " << (int)top->jalr << std::endl;
+            std::cout << "jal = " << (int)top->jal << ", jalr = " << (int)top->jalr << std::endl;
             std::cout << "imm_o = " << (int)top->imm_o << std::endl;
             std::cout << std::dec;
             std::cout << std::endl;

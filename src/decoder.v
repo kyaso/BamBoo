@@ -15,6 +15,7 @@ module decoder (
     output lui,
     output auipc,
     output branch,
+    output jal,
     output jalr
 );
 
@@ -48,6 +49,7 @@ module decoder (
         lui = 1'b0;
         auipc = 1'b0;
         branch = 1'b0;
+        jal = 1'b0;
         jalr = 1'b0;
         load = 1'b0;
         store = 1'b0;
@@ -67,7 +69,7 @@ module decoder (
                     op_sel[0] = OP1_PC;
                     op_sel[1] = OP2_IMM;
                     reg_we = 1'b1;
-                    jalr = 1'b1;
+                    jal = 1'b1;
                 end
             JALR:
                 begin
