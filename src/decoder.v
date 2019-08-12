@@ -5,18 +5,18 @@ module decoder (
     output [4:0] rs1,
     output [4:0] rs2,
     output [4:0] rd,
-    output reg_we,
-    output load,
-    output store,
-    output [31:0] imm_o,
+    output reg reg_we,
+    output reg load,
+    output reg store,
+    output reg [31:0] imm_o,
     output funct7,
     output [2:0] funct3,
-    output [1:0] op_sel,
-    output lui,
-    output auipc,
-    output branch,
-    output jal,
-    output jalr
+    output reg [1:0] op_sel,
+    output reg lui,
+    output reg auipc,
+    output reg branch,
+    output reg jal,
+    output reg jalr
 );
 
     localparam  OP_IMM  = 5'b00100,
