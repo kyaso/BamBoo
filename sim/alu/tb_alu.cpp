@@ -92,20 +92,20 @@ int main(int argc, char** argv, char** env) {
         SET_SIG(18, top->op1, 0x45);
         SET_SIG(18, top->op2, 0x89); // take_branch = 1
         
-        SET_SIG(19, top->op1, 0x45); // take_branch = 0
-        SET_SIG(20, top->op1, 0x50); // take_branch = 0
+        SET_SIG(19, top->op1, 0x89); // take_branch = 0
+        SET_SIG(20, top->op1, 0x90); // take_branch = 0
 
-        SET_SIG(21, top->op1, 0xFFD3); // take_branch = 1
+        SET_SIG(21, top->op1, 0xFFFFFFD3); // take_branch = 1
 
         /* BLTU */
         SET_SIG(22, top->funct3, 6);
         SET_SIG(22, top->op1, 0x45);
         SET_SIG(22, top->op2, 0x89); // take_branch = 1
         
-        SET_SIG(23, top->op1, 0x45); // take_branch = 0
-        SET_SIG(24, top->op1, 0x50); // take_branch = 0
+        SET_SIG(23, top->op1, 0x89); // take_branch = 0
+        SET_SIG(24, top->op1, 0x90); // take_branch = 0
 
-        SET_SIG(25, top->op1, 0xFFD3); // take_branch = 0
+        SET_SIG(25, top->op1, 0xFFFFFFD3); // take_branch = 0
 
         /* BGE (signed) */
         SET_SIG(26, top->funct3, 5);
@@ -115,7 +115,7 @@ int main(int argc, char** argv, char** env) {
         SET_SIG(27, top->op1, 0x89); // take_branch = 1
         SET_SIG(28, top->op1, 0x50); // take_branch = 0
 
-        SET_SIG(29, top->op2, 0xFFD3); // take_branch = 1
+        SET_SIG(29, top->op2, 0xFFFFFFD3); // take_branch = 1
 
         /* BGEU */
         SET_SIG(30, top->funct3, 7);
@@ -125,7 +125,7 @@ int main(int argc, char** argv, char** env) {
         SET_SIG(31, top->op1, 0x89); // take_branch = 1
         SET_SIG(32, top->op1, 0x50); // take_branch = 0
 
-        SET_SIG(33, top->op2, 0xFFD3); // take_branch = 0
+        SET_SIG(33, top->op2, 0xFFFFFFD3); // take_branch = 0
 
         // Test LOAD
         SET_SIG(34, top->load, 0x1);

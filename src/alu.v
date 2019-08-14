@@ -21,7 +21,9 @@ module alu (
                 GEU = 3'b101;
 
 
-    reg [2:0] comp;
+    reg equal; // inv = NE
+    reg less_than; // inv = GE
+    reg less_than_u; // inv = GEU
 
     // Arithmetic
     always @*
@@ -34,8 +36,8 @@ module alu (
                     else /* !has & funct7 */
                         alu_res = op1 - op2;
                 end
-            3'b010: alu_res = (comp == LT) ? 32'b1 : 32'b0;         // SLT(I)
-            3'b011: alu_res = (comp == LTU) ? 32'b1 : 32'b0;        // SLT(I)U
+            3'b010: alu_res = (less_than) ? 32'b1 : 32'b0;          // SLT(I)
+            3'b011: alu_res = (less_than_u) ? 32'b1 : 32'b0;        // SLT(I)U
             3'b100: alu_res = op1 ^ op2;                            // XOR(I)
             3'b110: alu_res = op1 | op2;                            // OR(I)
             3'b111: alu_res = op1 & op2;                            // AND(I)
@@ -60,31 +62,31 @@ module alu (
     always @*
     begin
         if(op1 == op2)                          // EQ
-            comp = EQ;
-        else if(op1 != op2)                     // NE
-            comp = NE;
-        else if($signed(op1) < $signed(op2))    // LT
-            comp = LT;
-        else if(op1 < op2)                      // LTU
-            comp = LTU;
-        else if($signed(op1) >= $signed(op2))   // GE
-            comp = GE;
-        else if(op1 >= op2)                     // GEU
-            comp = GEU;
-        else
-            comp = 3'b111;
+            equal = 1'b1;
+        else                                    // NE
+            equal = 1'b0;
+
+        if($signed(op1) < $signed(op2))         // LT
+            less_than = 1'b1;
+        else                                    // GE
+            less_than = 1'b0;
+
+        if(op1 < op2)                           // LTU
+            less_than_u = 1'b1;
+        else                                    // GEU
+            less_than_u = 1'b0;
     end
 
     // Branch
     always @*
     begin
         case(funct3)
-            3'b000: take_branch = (comp==EQ) ? 1'b1 : 1'b0;         // BEQ
-            3'b001: take_branch = (comp==NE) ? 1'b1 : 1'b0;         // BNE
-            3'b100: take_branch = (comp==LT) ? 1'b1 : 1'b0;         // BLT
-            3'b101: take_branch = (comp==GE) ? 1'b1 : 1'b0;         // BGE
-            3'b110: take_branch = (comp==LTU) ? 1'b1 : 1'b0;        // BLTU
-            3'b111: take_branch = (comp==GEU) ? 1'b1 : 1'b0;        // BGEU
+            3'b000: take_branch = (equal) ? 1'b1 : 1'b0;                // BEQ
+            3'b001: take_branch = (!equal) ? 1'b1 : 1'b0;               // BNE
+            3'b100: take_branch = (less_than) ? 1'b1 : 1'b0;            // BLT
+            3'b101: take_branch = (!less_than) ? 1'b1 : 1'b0;           // BGE
+            3'b110: take_branch = (less_than_u) ? 1'b1 : 1'b0;          // BLTU
+            3'b111: take_branch = (!less_than_u) ? 1'b1 : 1'b0;         // BGEU
             default: take_branch = 1'b0;
         endcase
     end
