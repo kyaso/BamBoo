@@ -11,20 +11,37 @@ module execute (
     input branch,
     input jal,
     input jalr,
-    output reg [31:0] next_pc_o
-    output reg [31:0] alu_res_o
+    input load,
+    input store,
+    output reg [31:0] next_pc_o,
+    output reg [31:0] res_o
 );
 
-    wire [31:0] op1;
-    wire [31:0] op2;
-    wire [31:0] pc_offset;
+    reg [31:0] op1;
+    reg [31:0] op2;
+    reg [31:0] pc_offset;
     wire take_branch;
-    wire next_pc_branch;
-    wire next_pc_jal_r;
+    wire [31:0] next_pc_branch;
+    wire [31:0] next_pc_jal_r;
     wire jal_r;
     wire [31:0] alu_res;
 
     assign jal_r = jal | jalr;
+
+    alu i_alu (
+        .op1            (op1),
+        .op2            (op2),
+        .funct3         (funct3),
+        .funct7         (funct7),
+        .jal_r          (jal_r),
+        .lui            (lui),
+        .auipc          (auipc),
+        .load           (load),
+        .store          (store),
+        .has_imm        (op_sel[1]), // Connect op_sel[1]
+        .take_branch    (take_branch),
+        .alu_res        (alu_res)
+    );
 
     // Operand selection MUXes
     always @*
@@ -64,7 +81,7 @@ module execute (
         endcase
     end
 
-    // ALU result
-    assign alu_res_o = jal_r ? next_pc_branch : alu_res;
+    // Result. In case of jal/r we need to write the address (pc+4) = next_pc_branch into rd
+    assign res_o = jal_r ? next_pc_branch : alu_res;
 
 endmodule
