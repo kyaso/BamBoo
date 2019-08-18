@@ -34,7 +34,7 @@ module cpu_top (
     wire [31:0] bitselect_i;
     wire [31:0] bitselect_o;
 
-    assign fetch_addr = pc;
+    assign fetch_addr = npc;
     assign mem_addr = alu_res;
     assign mem_byte_sel = funct3[1:0];
     assign mem_wdata = bitselect_o;

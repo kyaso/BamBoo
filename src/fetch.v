@@ -14,7 +14,7 @@ module fetch (
     begin
         if(~rst_n)
             begin
-                pc <= 0;
+                pc <= -4;
                 ir <= 0;
             end
         else
