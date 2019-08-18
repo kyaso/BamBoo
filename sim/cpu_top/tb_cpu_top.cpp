@@ -92,6 +92,8 @@ int main(int argc, char** argv, char** env) {
     ram_write(1, 28, 2, 0x0e402823);
     ram_write(1, 32, 2, 0x0c202423);
 
+    top->halt = 0;
+
     top->rst_n = 1;
     while(time < 10) {
         top->eval();

@@ -3,6 +3,7 @@ module cpu_top (
     input rst_n,
     input [31:0] inst_i,
     input [31:0] mem_rdata,
+    input halt,
     output [31:0] fetch_addr,
     output [31:0] mem_addr,
     output [1:0] mem_byte_sel,
@@ -48,6 +49,7 @@ module cpu_top (
         .rst_n(rst_n),
         .inst_i(inst_i),
         .next_pc_i(npc),
+        .halt(halt),
         .pc_o(pc),
         .ir_o(ir)
     );

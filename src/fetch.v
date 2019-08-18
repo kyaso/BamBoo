@@ -3,6 +3,7 @@ module fetch (
     input wire rst_n,
     input wire [31:0] inst_i,
     input wire [31:0] next_pc_i,
+    input halt,
     output reg [31:0] pc_o,
     output reg [31:0] ir_o
 );
@@ -19,8 +20,11 @@ module fetch (
             end
         else
             begin
-                pc <= next_pc_i;
-                ir <= inst_i;
+                if(~halt)
+                    begin
+                        pc <= next_pc_i;
+                        ir <= inst_i;
+                    end
             end
     end
 

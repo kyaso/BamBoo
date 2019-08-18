@@ -27,6 +27,11 @@ int main(int argc, char** argv, char** env) {
         SET_SIG(100, top->next_pc_i, 1024);
         SET_SIG(175, top->inst_i, 589);
 
+        SET_SIG(176, top->halt, 1);
+        SET_SIG(179, top->next_pc_i, 1245); // @180: PC = 1024
+
+        SET_SIG(184, top->halt, 0); // @190: PC = 1245
+
         top->eval();
 
         if((time % CLK_PERIOD) == 0 || (time % CLK_PERIOD) == CLK_PERIOD/2) {   // Read outputs
