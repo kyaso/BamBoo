@@ -12,7 +12,7 @@ int main(int argc, char** argv, char** env) {
 
     Vdecoder* top = new Vdecoder; // Change this
 
-    while(time < 9) {
+    while(time < 10) {
 
         // ADDI r2 <-- r1 + 1001 1001 0110
         // 100110010110 00001 000 00010 0010011
@@ -184,6 +184,12 @@ int main(int argc, char** argv, char** env) {
         // jal/r = 0
         // imm_o = fffff8d1
         SET_SIG(8, top->ir_i, 0x8D7088A3)
+
+        // FENCE
+        // FM Pred Succ rs1=0 funct3 rd=0 MISC-MEM
+        // 0000 1111 1111 00000 000 00000 0001111
+        // 0000 1111 1111 0000 0000 0000 0000 1111 = 0x0FF0000F
+        SET_SIG(9, top->ir_i, 0x0FF0000F)
 
         top->eval();
 
