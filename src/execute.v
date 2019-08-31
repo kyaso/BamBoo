@@ -14,7 +14,7 @@ module execute (
     input load,
     input store,
     output reg [31:0] next_pc_o,
-    output reg [31:0] res_o
+    output [31:0] res_o
 );
 
     reg [31:0] op1;

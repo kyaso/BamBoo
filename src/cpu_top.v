@@ -109,4 +109,4 @@ module cpu_top (
         .res_o(alu_res)
     );
 
-endmodule;
+endmodule

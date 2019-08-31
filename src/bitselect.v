@@ -1,6 +1,6 @@
 module bitselect (
     input [31:0] val_i,
-    output [31:0] val_o,
+    output reg [31:0] val_o,
     input [2:0] funct3
 );
 

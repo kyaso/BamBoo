@@ -9,8 +9,8 @@ module ram
     input wire [31:0] addr_a,
     input wire [31:0] addr_b,
     /* verilator lint_on UNUSED */
-    output reg [31:0] data_a,
-    output reg [31:0] data_b
+    output [31:0] data_a,
+    output [31:0] data_b
 );
 
     reg [7:0] mem [DEPTH-1:0];

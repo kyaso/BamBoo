@@ -4,8 +4,8 @@ module fetch (
     input wire [31:0] inst_i,
     input wire [31:0] next_pc_i,
     input halt,
-    output reg [31:0] pc_o,
-    output reg [31:0] ir_o
+    output [31:0] pc_o,
+    output [31:0] ir_o
 );
 
     reg [31:0] pc;
