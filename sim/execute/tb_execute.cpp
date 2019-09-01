@@ -8,11 +8,11 @@
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Vexecute* top = new Vexecute; // Change this
 
-    while(time < 14) {
+    SIM_INIT;
+
+    SIM_START(14)
 
         // Test OP-IMM
         /* ADDI */
@@ -66,8 +66,8 @@ int main(int argc, char** argv, char** env) {
         SET_SIG(7, top->rs1_i, 0xBEEF);
         SET_SIG(7, top->imm_i, 0x10);
         SET_SIG(7, top->op_sel, 2);
-        SET_SIG(7, top->jalr, 1); // @7: next_pc_o = beff
-        SET_SIG(7, top->jalr, 0);
+        SET_SIG(7, top->jalr, 1); // @7: next_pc_o = befe (note: jalr sets LSB to 0!)
+        SET_SIG(8, top->jalr, 0);
 
         // Test BRANCH
         /* BEQ */
@@ -118,6 +118,35 @@ int main(int argc, char** argv, char** env) {
 
         top->eval();
 
+        // Check outputs
+        CHECK(0, top->res_o, 0x2a);
+
+        CHECK(1, top->res_o, 0x190);
+
+        CHECK(2, top->res_o, 0x69);
+
+        CHECK(3, top->res_o, 0xdeef);
+
+        CHECK(4, top->res_o, 0x22);
+
+        CHECK(5, top->res_o, 0x8a);
+
+        CHECK(6, top->next_pc_o, 0xaffa);
+
+        CHECK(7, top->next_pc_o, 0xbefe);
+
+        CHECK(8, top->next_pc_o, 0xbd);
+
+        CHECK(9, top->next_pc_o, 0xbd);
+
+        CHECK(10, top->next_pc_o, 0x68);
+
+        CHECK(11, top->next_pc_o, 0x68);
+        CHECK(11, top->res_o, 0x400);
+
+        CHECK(12, top->next_pc_o, 0x68);
+        CHECK(12, top->res_o, 0x400);
+
         /*if((time % CLK_PERIOD) == 0 || (time % CLK_PERIOD) == CLK_PERIOD/2)*/ {   // Read outputs
             std::cout << ">>> Time = " << time << std::endl;
             std::cout << std::hex;
@@ -127,8 +156,10 @@ int main(int argc, char** argv, char** env) {
             std::cout << std::endl;
         }
 
-        time++; // Advance simulation time
-    }
+        SIM_ADV_TIME; // Advance simulation time
+    SIM_END;
+
+    TEST_PASSFAIL;
 
     delete top;
     exit(0);

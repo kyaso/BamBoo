@@ -8,11 +8,11 @@
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Vregfile* top = new Vregfile; // Change this
 
-    while(time < 200) {
+    SIM_INIT;
+
+    SIM_START(200)
 
         CLOCK(top->clk, CLK_PERIOD);
         
@@ -57,8 +57,23 @@ int main(int argc, char** argv, char** env) {
             std::cout << std::endl;
         }
 
-        time++; // Advance simulation time
-    }
+        // Check outputs
+        CHECK(35, top->rs1_val_o, 42);
+
+        CHECK(50, top->rs1_val_o, 0);
+
+        CHECK(50, top->rs2_val_o, 569);
+
+        CHECK(55, top->rs1_val_o, 0);
+        CHECK(65, top->rs2_val_o, 0);
+
+        CHECK(80, top->rs1_val_o, 0);
+        CHECK(80, top->rs1_val_o, 0);
+
+        SIM_ADV_TIME // Advance simulation time
+    SIM_END
+
+    TEST_PASSFAIL
 
     delete top;
     exit(0);

@@ -37,9 +37,9 @@ void ram_write(int we, uint addr, int byte_sel, uint val) {
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Vcpu_top* top = new Vcpu_top; // Change this
+
+    SIM_INIT;
 
     // Write program to RAM
     //
@@ -110,7 +110,7 @@ int main(int argc, char** argv, char** env) {
 
     std::cout << "Start PC = " << (int)top->cpu_top__DOT__i_fetch__DOT__pc << std::endl;
 
-    while(time < 120) {
+   SIM_START(120)
 
         // Clock
         CLOCK(top->clk, CLK_PERIOD);
@@ -138,11 +138,16 @@ int main(int argc, char** argv, char** env) {
             std::cout << std::endl;
         }
 
-        time++; // Advance simulation time
-    }
+        SIM_ADV_TIME; // Advance simulation time
+    SIM_END;
 
     std::cout << "addr200 = " << std::hex << ram_read(200) << std::endl; // Should be 2
     std::cout << "addr240 = " << ram_read(240) << std::endl; // Should be 0
+
+    if(ram_read(200)!=2) errors++;
+    if(ram_read(240)!=0) errors++;
+
+    TEST_PASSFAIL;
 
     delete top;
     exit(0);

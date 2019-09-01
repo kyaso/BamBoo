@@ -8,11 +8,11 @@
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Vram* top = new Vram; // Change this
 
-    while(time < 100) {
+    SIM_INIT;
+
+    SIM_START(100)
 
         CLOCK(top->clk, CLK_PERIOD);
         
@@ -33,17 +33,17 @@ int main(int argc, char** argv, char** env) {
         SET_SIG(29, top->addr_a, 0);
         SET_SIG(34, top->mem_we, 0);
 
-        // Read from address 0 on port a --> @40: data_a = 0x4200DEAD
+        // Read from address 0 on port a --> @36: data_a = 0x4200DEAD
         SET_SIG(36, top->addr_a, 0);
 
         // Write word (0xAFFE1234) to address 4
         SET_SIG(39, top->data_i, 0xAFFE1234);
         SET_SIG(39, top->mem_we, 1);
         SET_SIG(39, top->byte_sel, 2);
-        SET_SIG(39, top->addr_a, 4);
-        SET_SIG(44, top->mem_we, 0);
+        SET_SIG(39, top->addr_a, 4); // @39: data_a = 0
+        SET_SIG(44, top->mem_we, 0); // @40: data_a = 0xAFFE1234
 
-        // Read from address 4 on port b --> @55: data_b = 0xAFFE1234
+        // Read from address 4 on port b --> @52: data_b = 0xAFFE1234
         SET_SIG(52, top->addr_b, 4);
 
         // Read from address 2 on part a --> @70: data_a = 0x12344200
@@ -60,8 +60,23 @@ int main(int argc, char** argv, char** env) {
             std::cout << std::endl;
         }
 
-        time++; // Advance simulation time
-    }
+        // Check values
+        CHECK(25, top->data_a, 0x00000042);
+
+        CHECK(36, top->data_a, 0x4200DEAD);
+
+        CHECK(39, top->data_a, 0);
+        CHECK(40, top->data_a, 0xAFFE1234);
+
+        CHECK(52, top->data_b, 0xAFFE1234);
+
+        CHECK(70, top->data_a, 0x12344200);
+
+        SIM_ADV_TIME // Advance simulation time
+
+    SIM_END
+
+    TEST_PASSFAIL;
 
     delete top;
     exit(0);

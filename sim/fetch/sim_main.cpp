@@ -8,9 +8,9 @@
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Vfetch* top = new Vfetch;
+
+    SIM_INIT;
 
     top->rst_n = 0; // Assert reset
     while(time < 10) {
@@ -19,7 +19,7 @@ int main(int argc, char** argv, char** env) {
     top->rst_n = 1; // Deassert reset
 
 
-    while(time < 200) {
+    SIM_START(200)
 
         CLOCK(top->clk, CLK_PERIOD);
         
@@ -34,6 +34,14 @@ int main(int argc, char** argv, char** env) {
 
         top->eval();
 
+        // Check outputs
+        CHECK(50, top->pc_o, 42);
+        CHECK(100, top->pc_o, 1024);
+        CHECK(180, top->pc_o, 1024);
+        CHECK(180, top->ir_o, 0);
+        CHECK(190, top->pc_o, 1245);
+        CHECK(190, top->ir_o, 589);
+
         if((time % CLK_PERIOD) == 0 || (time % CLK_PERIOD) == CLK_PERIOD/2) {   // Read outputs
             std::cout << ">>> Time = " << time << std::endl;
             std::cout << "PC = " << top->pc_o << std::endl;
@@ -41,8 +49,10 @@ int main(int argc, char** argv, char** env) {
             std::cout << std::endl;
         }
 
-        time++; // Advance simulation time
-    }
+        SIM_ADV_TIME // Advance simulation time
+    SIM_END
+
+    TEST_PASSFAIL;
 
     delete top;
     exit(0);

@@ -8,11 +8,12 @@
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Valu* top = new Valu; // Change this
 
-    while(time < 40) {
+    SIM_INIT;
+
+    //while(time < 40) {
+    SIM_START(40)
 
         // Test ADD
         SET_SIG(0, top->op1, 0x42);
@@ -141,6 +142,46 @@ int main(int argc, char** argv, char** env) {
 
         top->eval();
 
+        // Check outputs
+        CHECK(0, top->alu_res, 0x98);
+        CHECK(1, top->alu_res, 0xFFFFFFEC);
+        CHECK(2, top->alu_res, 0x98);
+        CHECK(3, top->alu_res, 0x1);
+        CHECK(4, top->alu_res, 0x1);
+        CHECK(5, top->alu_res, 0x14);
+        CHECK(6, top->alu_res, 0x56);
+        CHECK(7, top->alu_res, 0x42);
+        CHECK(8, top->alu_res, 0x84);
+        CHECK(9, top->alu_res, 0x10);
+        CHECK(10, top->alu_res, 0x10);
+        CHECK(11, top->alu_res, 0xdead);
+        CHECK(12, top->alu_res, 0xdeef);
+        CHECK(13, top->alu_res, 0xdeef);
+
+        CHECK(14, top->take_branch, 1);
+        CHECK(15, top->take_branch, 0);
+        CHECK(16, top->take_branch, 1);
+        CHECK(17, top->take_branch, 0);
+        CHECK(18, top->take_branch, 1);
+        CHECK(19, top->take_branch, 0);
+        CHECK(20, top->take_branch, 0);
+        CHECK(21, top->take_branch, 1);
+        CHECK(22, top->take_branch, 1);
+        CHECK(23, top->take_branch, 0);
+        CHECK(24, top->take_branch, 0);
+        CHECK(25, top->take_branch, 0);
+        CHECK(26, top->take_branch, 1);
+        CHECK(27, top->take_branch, 1);
+        CHECK(28, top->take_branch, 0);
+        CHECK(29, top->take_branch, 1);
+        CHECK(30, top->take_branch, 1);
+        CHECK(31, top->take_branch, 1);
+        CHECK(32, top->take_branch, 0);
+        CHECK(33, top->take_branch, 0);
+        
+        CHECK(34, top->alu_res, 0x11e);
+        CHECK(36, top->alu_res, 0x11e);
+
         /*if((time % CLK_PERIOD) == 0 || (time % CLK_PERIOD) == CLK_PERIOD/2)*/ {   // Read outputs
             std::cout << ">>> Time = " << time << std::endl;
             std::cout << std::hex;
@@ -150,8 +191,10 @@ int main(int argc, char** argv, char** env) {
             std::cout << std::endl;
         }
 
-        time++; // Advance simulation time
-    }
+        SIM_ADV_TIME // Advance simulation time
+    SIM_END
+
+    TEST_PASSFAIL;
 
     delete top;
     exit(0);

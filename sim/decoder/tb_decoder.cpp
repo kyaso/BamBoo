@@ -8,11 +8,11 @@
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Vdecoder* top = new Vdecoder; // Change this
 
-    while(time < 10) {
+    SIM_INIT
+
+    SIM_START(10)
 
         // ADDI r2 <-- r1 + 1001 1001 0110
         // 100110010110 00001 000 00010 0010011
@@ -193,6 +193,8 @@ int main(int argc, char** argv, char** env) {
 
         top->eval();
 
+        // Check outputs
+
         /*if((time % CLK_PERIOD) == 0 || (time % CLK_PERIOD) == CLK_PERIOD/2)*/ {   // Read outputs
             std::cout << ">>> Time = " << time << std::endl;
             std::cout << std::hex;
@@ -212,8 +214,136 @@ int main(int argc, char** argv, char** env) {
             std::cout << std::endl;
         }
 
-        time++; // Advance simulation time
+
+        CHECK(0, top->rs1, 1);
+        CHECK(0, top->rd, 2);
+        CHECK(0, top->reg_we, 1);
+        CHECK(0, top->load, 0);
+        CHECK(0, top->store, 0);
+        CHECK(0, top->funct3, 0);
+        CHECK(0, top->op_sel, 2);
+        CHECK(0, top->lui, 0);
+        CHECK(0, top->auipc, 0);
+        CHECK(0, top->branch, 0);
+        CHECK(0, top->jal, 0);
+        CHECK(0, top->jalr, 0);
+        CHECK(0, top->imm_o, 0xfffff996);
+
+
+        CHECK(1, top->rs1, 4);
+        CHECK(1, top->rs2, 0xf);
+        CHECK(1, top->rd, 0x18);
+        CHECK(1, top->reg_we, 1);
+        CHECK(1, top->load, 0);
+        CHECK(1, top->store, 0);
+        CHECK(1, top->funct7, 0);
+        CHECK(1, top->funct3, 4);
+        CHECK(1, top->op_sel, 0);
+        CHECK(1, top->lui, 0);
+        CHECK(1, top->auipc, 0);
+        CHECK(1, top->branch, 0);
+        CHECK(1, top->jal, 0);
+        CHECK(1, top->jalr, 0);
+
+        CHECK(2, top->rd, 0x6);
+        CHECK(2, top->reg_we, 1);
+        CHECK(2, top->load, 0);
+        CHECK(2, top->store, 0);
+        CHECK(2, top->op_sel, 3);
+        CHECK(2, top->lui, 0);
+        CHECK(2, top->auipc, 0);
+        CHECK(2, top->branch, 0);
+        CHECK(2, top->jal, 1);
+        CHECK(2, top->jalr, 0);
+        CHECK(2, top->imm_o, 0xFFF3AC76);
+
+        CHECK(3, top->rs1, 0x1d);
+        CHECK(3, top->rd, 0x11);
+        CHECK(3, top->reg_we, 1);
+        CHECK(3, top->load, 0);
+        CHECK(3, top->store, 0);
+        CHECK(3, top->funct3, 0);
+        CHECK(3, top->op_sel, 2);
+        CHECK(3, top->lui, 0);
+        CHECK(3, top->auipc, 0);
+        CHECK(3, top->branch, 0);
+        CHECK(3, top->jal, 0);
+        CHECK(3, top->jalr, 1);
+        CHECK(3, top->imm_o, 0xfffffcd5);
+
+        CHECK(4, top->rs1, 0x12);
+        CHECK(4, top->rs2, 0x2);
+        CHECK(4, top->reg_we, 0);
+        CHECK(4, top->load, 0);
+        CHECK(4, top->store, 0);
+        CHECK(4, top->funct3, 5);
+        CHECK(4, top->op_sel, 0);
+        CHECK(4, top->lui, 0);
+        CHECK(4, top->auipc, 0);
+        CHECK(4, top->branch, 1);
+        CHECK(4, top->jal, 0);
+        CHECK(4, top->jalr, 0);
+        CHECK(4, top->imm_o, 0xFFFFF58C);
+
+        CHECK(5, top->rd, 0x5);
+        CHECK(5, top->reg_we, 1);
+        CHECK(5, top->load, 0);
+        CHECK(5, top->store, 0);
+        CHECK(5, top->op_sel, 2);
+        CHECK(5, top->lui, 1);
+        CHECK(5, top->auipc, 0);
+        CHECK(5, top->branch, 0);
+        CHECK(5, top->jal, 0);
+        CHECK(5, top->jalr, 0);
+        CHECK(5, top->imm_o, 0x93b1a000);
+
+        CHECK(6, top->rd, 0x7);
+        CHECK(6, top->reg_we, 1);
+        CHECK(6, top->load, 0);
+        CHECK(6, top->store, 0);
+        CHECK(6, top->op_sel, 3);
+        CHECK(6, top->lui, 0);
+        CHECK(6, top->auipc, 1);
+        CHECK(6, top->branch, 0);
+        CHECK(6, top->jal, 0);
+        CHECK(6, top->jalr, 0);
+        CHECK(6, top->imm_o, 0x93b1a000);
+
+        CHECK(7, top->rs1, 8);
+        CHECK(7, top->rd, 0x3);
+        CHECK(7, top->reg_we, 1);
+        CHECK(7, top->load, 1);
+        CHECK(7, top->store, 0);
+        CHECK(7, top->funct3, 2);
+        CHECK(7, top->op_sel, 2);
+        CHECK(7, top->lui, 0);
+        CHECK(7, top->auipc, 0);
+        CHECK(7, top->branch, 0);
+        CHECK(7, top->jal, 0);
+        CHECK(7, top->jalr, 0);
+        CHECK(7, top->imm_o, 0xfffff934);
+
+        CHECK(8, top->rs1, 1);
+        CHECK(8, top->reg_we, 0);
+        CHECK(8, top->load, 0);
+        CHECK(8, top->store, 1);
+        CHECK(8, top->funct3, 0);
+        CHECK(8, top->op_sel, 2);
+        CHECK(8, top->lui, 0);
+        CHECK(8, top->auipc, 0);
+        CHECK(8, top->branch, 0);
+        CHECK(8, top->jal, 0);
+        CHECK(8, top->jalr, 0);
+        CHECK(8, top->imm_o, 0xfffff8d1);
+
+        CHECK(9, top->reg_we, 0);
+        CHECK(9, top->load, 0);
+        CHECK(9, top->store, 0);
+
+        SIM_ADV_TIME; // Advance simulation time
     }
+
+    TEST_PASSFAIL;
 
     delete top;
     exit(0);

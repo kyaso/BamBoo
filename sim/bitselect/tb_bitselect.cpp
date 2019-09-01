@@ -8,11 +8,11 @@
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Vbitselect* top = new Vbitselect; // Change this
 
-    while(time < 10) {
+    SIM_INIT
+
+    SIM_START(10)
         
         /// Test byte
         // Set val_i = 0xF0000082
@@ -68,13 +68,26 @@ int main(int argc, char** argv, char** env) {
 
         top->eval();
 
+        // Check outputs
+        CHECK(0, top->val_o, 0xFFFFFF82);
+        CHECK(1, top->val_o, 0x00000082);
+        CHECK(2, top->val_o, 0xFFFF8EAD);
+        CHECK(3, top->val_o, 0x00008EAD);
+        CHECK(4, top->val_o, 0xAFFE1234);
+        CHECK(5, top->val_o, 0x00000042);
+        CHECK(6, top->val_o, 0x00000042);
+        CHECK(7, top->val_o, 0x00007EAD);
+        CHECK(8, top->val_o, 0x00007EAD);
+
         // Read output
         std::cout << ">>> Time = " << time << std::endl;
         std::cout << "val_o = " << std::hex << top->val_o << std::dec << std::endl;
         std::cout << std::endl;
 
-        time++; // Advance simulation time
-    }
+        SIM_ADV_TIME // Advance simulation time
+    SIM_END
+
+    TEST_PASSFAIL;
 
     delete top;
     exit(0);

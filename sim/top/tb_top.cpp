@@ -37,9 +37,9 @@ void ram_write(int we, uint addr, int byte_sel, uint val) {
 int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
 
-    uint64_t time = 0;
-
     Vtop* top = new Vtop; // Change this
+
+    SIM_INIT;
 
     // Write program to RAM
     //
@@ -93,7 +93,7 @@ int main(int argc, char** argv, char** env) {
     ram_write(1, 32, 2, 0x0c202423);
 
 
-    while(time < 200) {
+    SIM_START(200)
 
         SET_SIG(0, top->rst_n, 1);
 
@@ -152,18 +152,22 @@ int main(int argc, char** argv, char** env) {
         //     std::cout << std::endl;
         // }
 
-        time++; // Advance simulation time
-    }
+        SIM_ADV_TIME // Advance simulation time
+    SIM_END;
 
     top->debug = 1;
     top->mem_addr_dbg = 200;
     top->eval();
     std::cout << std::hex;
     std::cout << "addr200 = " << (int)top->mem_rdata_dbg << std::endl;
+    CHECK2(top->mem_rdata_dbg, 2);
 
     top->mem_addr_dbg = 240;
     top->eval();
     std::cout << "addr240 = " << (int)top->mem_rdata_dbg << std::endl;
+    CHECK2(top->mem_rdata_dbg, 0);
+
+    TEST_PASSFAIL;
 
 
 
