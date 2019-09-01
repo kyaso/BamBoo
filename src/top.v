@@ -6,7 +6,8 @@ module top (
     input [1:0] mem_byte_sel_dbg,
     input mem_we_dbg,
     input debug,
-    output [31:0] mem_rdata_dbg
+    output [31:0] mem_rdata_dbg,
+    output [31:0] pc
 );
 
     wire [31:0] mem_wdata_cpu;
@@ -62,7 +63,8 @@ module top (
         .mem_addr(mem_addr_cpu),
         .mem_byte_sel(byte_sel_cpu),
         .mem_wdata(mem_wdata_cpu),
-        .mem_we(mem_we_cpu)
+        .mem_we(mem_we_cpu),
+        .pc_o(pc)
     );
 
 endmodule

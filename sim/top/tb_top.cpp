@@ -151,6 +151,10 @@ int main(int argc, char** argv, char** env) {
         //     std::cout << std::dec;
         //     std::cout << std::endl;
         // }
+        if(time % CLK_PERIOD == 0) {
+            std::cout << std::hex;
+            std::cout << "PC = " << (int)top->pc << std::endl;
+        }
 
         SIM_ADV_TIME // Advance simulation time
     SIM_END;

@@ -128,7 +128,7 @@ int main(int argc, char** argv, char** env) {
         if((time % CLK_PERIOD) == 0 || (time % CLK_PERIOD) == CLK_PERIOD/2) {   // Read outputs
             std::cout << ">>> Time = " << time << std::endl;
             std::cout << std::hex;
-            std::cout << "PC = " << (int)top->cpu_top__DOT__i_fetch__DOT__pc << std::endl;
+            std::cout << "PC = " << (int)top->pc_o << std::endl;
             std::cout << "NPC = " << (int)top->cpu_top__DOT__npc << std::endl;
             std::cout << "pc_offset = " << (int)top->cpu_top__DOT__i_execute__DOT__pc_offset << std::endl;
             std::cout << "branch = " << (int)top->cpu_top__DOT__branch << ", take_branch = " << (int)top->cpu_top__DOT__i_execute__DOT__take_branch << std::endl;
