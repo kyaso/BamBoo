@@ -8,6 +8,7 @@ module cpu_top (
     output [31:0] mem_addr,
     output [1:0] mem_byte_sel,
     output [31:0] mem_wdata,
+    output mem_en,
     output mem_we,
     output [31:0] pc_o
 );
@@ -42,6 +43,7 @@ module cpu_top (
     assign mem_byte_sel = funct3[1:0];
     assign mem_wdata = bitselect_o;
     assign mem_we = store;
+    assign mem_en = load | store;
     
     assign reg_w_val = load ? bitselect_o : alu_res;
     assign bitselect_i = load ? mem_rdata : rs2_val;

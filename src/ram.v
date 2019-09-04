@@ -2,6 +2,7 @@ module ram
 #(parameter DEPTH=256)
 (
     input wire clk,
+    input wire en,
     input wire [31:0] data_i,
     input wire mem_we,
     input wire [1:0] byte_sel,
@@ -9,7 +10,7 @@ module ram
     input wire [31:0] addr_a,
     input wire [31:0] addr_b,
     /* verilator lint_on UNUSED */
-    output [31:0] data_a,
+    output reg [31:0] data_a,
     output [31:0] data_b
 );
 
@@ -17,28 +18,36 @@ module ram
 
     always @(posedge clk)
     begin
-        if(mem_we)
+        if(en)
             begin
-                if(byte_sel==0) // SB
+                if(mem_we)
                     begin
-                        mem[addr_a] <= data_i   [7:0];
-                    end
-                else if(byte_sel==1) // SH
-                    begin
-                        mem[addr_a]     <= data_i   [7:0];
-                        mem[addr_a + 1] <= data_i   [15:8];
-                    end
-                else if(byte_sel==2) // SW
-                    begin
-                        mem[addr_a]     <= data_i   [7:0];
-                        mem[addr_a + 1] <= data_i   [15:8];
-                        mem[addr_a + 2] <= data_i   [23:16];
-                        mem[addr_a + 3] <= data_i   [31:24];
+                        if(byte_sel==0) // SB
+                            begin
+                                mem[addr_a] <= data_i   [7:0];
+                            end
+                        else if(byte_sel==1) // SH
+                            begin
+                                mem[addr_a]     <= data_i   [7:0];
+                                mem[addr_a + 1] <= data_i   [15:8];
+                            end
+                        else if(byte_sel==2) // SW
+                            begin
+                                mem[addr_a]     <= data_i   [7:0];
+                                mem[addr_a + 1] <= data_i   [15:8];
+                                mem[addr_a + 2] <= data_i   [23:16];
+                                mem[addr_a + 3] <= data_i   [31:24];
+                            end
                     end
             end
     end
 
-    assign data_a = { mem[addr_a+3], mem[addr_a+2], mem[addr_a+1], mem[addr_a] };
+    always @*
+    begin
+        if(en)
+            data_a = { mem[addr_a+3], mem[addr_a+2], mem[addr_a+1], mem[addr_a] };
+    end
+
     assign data_b = { mem[addr_b+3], mem[addr_b+2], mem[addr_b+1], mem[addr_b] };
 
 endmodule

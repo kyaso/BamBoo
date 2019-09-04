@@ -102,6 +102,7 @@ int main(int argc, char** argv, char** env) {
 
         // Write program to RAM
         SET_SIG(0, top->debug, 1);
+        SET_SIG(0, top->mem_en_dbg, 1);
         SET_SIG(0, top->mem_we_dbg, 1);
         SET_SIG(0, top->mem_byte_sel_dbg, 2);
 

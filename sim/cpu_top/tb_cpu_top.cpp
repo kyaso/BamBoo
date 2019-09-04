@@ -17,19 +17,21 @@ uint ram_read(uint addr) {
     return val;
 }
 
-void ram_write(int we, uint addr, int byte_sel, uint val) {
-    if(we) {
-        if(byte_sel==0)
-            ram[addr] = (uint8_t)val;
-        else if(byte_sel==1) {
-            ram[addr] = (uint8_t)val;
-            ram[addr+1] = (uint8_t)(val>>8);
-        }
-        else if(byte_sel==2) {
-            ram[addr] = (uint8_t)val;
-            ram[addr+1] = (uint8_t)(val>>8);
-            ram[addr+2] = (uint8_t)(val>>16);
-            ram[addr+3] = (uint8_t)(val>>24);
+void ram_write(int en, int we, uint addr, int byte_sel, uint val) {
+    if(en) {
+        if(we) {
+            if(byte_sel==0)
+                ram[addr] = (uint8_t)val;
+            else if(byte_sel==1) {
+                ram[addr] = (uint8_t)val;
+                ram[addr+1] = (uint8_t)(val>>8);
+            }
+            else if(byte_sel==2) {
+                ram[addr] = (uint8_t)val;
+                ram[addr+1] = (uint8_t)(val>>8);
+                ram[addr+2] = (uint8_t)(val>>16);
+                ram[addr+3] = (uint8_t)(val>>24);
+            }
         }
     }
 }
@@ -82,15 +84,15 @@ int main(int argc, char** argv, char** env) {
     // 0000 1100 0010 0000 0010 0100 0010 0011 = 0x0c202423
 
 
-    ram_write(1, 0, 2, 0x02800093);
-    ram_write(1, 4, 2, 0x00200113);
-    ram_write(1, 8, 2, 0x002081B3);
-    ram_write(1, 12, 2, 0x06300223);
-    ram_write(1, 16, 2, 0x01c00213);
-    ram_write(1, 20, 2, 0x06400283);
-    ram_write(1, 24, 2, 0x00524463);
-    ram_write(1, 28, 2, 0x0e402823);
-    ram_write(1, 32, 2, 0x0c202423);
+    ram_write(1, 1, 0, 2, 0x02800093);
+    ram_write(1, 1, 4, 2, 0x00200113);
+    ram_write(1, 1, 8, 2, 0x002081B3);
+    ram_write(1, 1, 12, 2, 0x06300223);
+    ram_write(1, 1, 16, 2, 0x01c00213);
+    ram_write(1, 1, 20, 2, 0x06400283);
+    ram_write(1, 1, 24, 2, 0x00524463);
+    ram_write(1, 1, 28, 2, 0x0e402823);
+    ram_write(1, 1, 32, 2, 0x0c202423);
 
     top->halt = 0;
 
@@ -118,7 +120,7 @@ int main(int argc, char** argv, char** env) {
         // RAM
         top->inst_i = ram_read(top->fetch_addr);
         if(time%10 == 0)
-            ram_write(top->mem_we, top->mem_addr, top->mem_byte_sel, top->mem_wdata);
+            ram_write(top->mem_en, top->mem_we, top->mem_addr, top->mem_byte_sel, top->mem_wdata);
         top->mem_rdata = ram_read(top->mem_addr);
 
 

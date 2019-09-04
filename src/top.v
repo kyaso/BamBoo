@@ -1,6 +1,7 @@
 module top (
     input clk,
     input rst_n,
+    input mem_en_dbg,
     input [31:0] mem_wdata_dbg,
     input [31:0] mem_addr_dbg,
     input [1:0] mem_byte_sel_dbg,
@@ -10,6 +11,8 @@ module top (
     output [31:0] pc
 );
 
+    reg mem_en;
+    wire mem_en_cpu;
     wire [31:0] mem_wdata_cpu;
     reg [31:0] mem_wdata;
     reg mem_we;
@@ -26,6 +29,7 @@ module top (
     begin
         if(debug)
             begin
+                mem_en = mem_en_dbg;
                 mem_wdata = mem_wdata_dbg;
                 mem_we = mem_we_dbg;
                 byte_sel = mem_byte_sel_dbg;
@@ -33,6 +37,7 @@ module top (
             end
         else
             begin
+                mem_en = mem_en_cpu;
                 mem_wdata = mem_wdata_cpu;
                 mem_we = mem_we_cpu;
                 byte_sel = byte_sel_cpu;
@@ -44,6 +49,7 @@ module top (
 
     ram i_ram (
         .clk(clk),
+        .en(mem_en),
         .data_i(mem_wdata),
         .mem_we(mem_we),
         .byte_sel(byte_sel),
@@ -63,6 +69,7 @@ module top (
         .mem_addr(mem_addr_cpu),
         .mem_byte_sel(byte_sel_cpu),
         .mem_wdata(mem_wdata_cpu),
+        .mem_en(mem_en_cpu),
         .mem_we(mem_we_cpu),
         .pc_o(pc)
     );
