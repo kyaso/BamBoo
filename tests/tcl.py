@@ -5,7 +5,7 @@ import numpy as np
 filename = sys.argv[1]
 
 # Load binary executable
-binary = np.fromfile(filename, dtype='>u4')
+binary = np.fromfile(filename, dtype='<u4')
 
 start_addr = 0x0
 
