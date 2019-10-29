@@ -18,7 +18,8 @@ with open(filename+".tcl", 'w') as f:
     f.write("# Write instructions to BRAM\n")
     for i in range(0,binary.shape[0]):
         f.write("set_property CMD.ADDR "+str(hex(start_addr))+" [get_hw_axi_txns wr_txn]\n")
-        f.write("set_property DATA "+hex(binary[i]).rstrip("L")+" [get_hw_axi_txns wr_txn]\n")
+        f.write("set_property DATA "+"{0:#0{1}x}".format(binary[i],10)+" [get_hw_axi_txns wr_txn]\n")
+        #f.write("set_property DATA "+hex(binary[i]).rstrip("L")+" [get_hw_axi_txns wr_txn]\n")
         f.write("run_hw_axi [get_hw_axi_txns wr_txn]\n\n")
 
         start_addr = start_addr+4
