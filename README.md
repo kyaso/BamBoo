@@ -3,9 +3,9 @@ BamBoo is a WIP Verilog implementation of the RISC-V instruction set architectur
 
 ## Feature wishlist (descending priority)
 
-* Wishbone master
-* Instruction pipeline
-* UART
-* L1 I/D caches
-* FPU
-* TileLink master
+- [ ] Wishbone master
+- [ ] Instruction pipeline
+- [ ] UART
+- [ ] L1 I/D caches
+- [ ] FPU
+- [ ] TileLink master
